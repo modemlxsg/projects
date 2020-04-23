@@ -9,6 +9,9 @@ class CardRecognition(torch.nn.Module):
         self.backbone.fc = torch.nn.Linear(
             in_features=1024, out_features=53, bias=True)
 
+        for params in self.backbone.parameters():
+            params.requires_grad = True
+
     def forward(self, inputs):
         out = self.backbone(inputs)
         return out

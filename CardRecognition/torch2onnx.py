@@ -1,7 +1,12 @@
 import torch
 import torchvision
+from model import CardRecognition
 
-dummy_input = torch.randn(10, 3, 224, 224, device='cuda')
-model = torchvision.models.shufflenet_v2_x1_0(pretrained=True).cuda()
+model = CardRecognition()
+model.load_state_dict(torch.load("./run/epoch_60.pth"))
+model.to('cuda:0')
 
-torch.onnx.export(model, dummy_input, 'shuffleNetV2.onnx')
+batch_size = 16
+dummy_input = torch.randn(batch_size, 3, 224, 224, device='cuda')
+
+torch.onnx.export(model, dummy_input, f'cardrecog_b{batch_size}_v1.onnx')

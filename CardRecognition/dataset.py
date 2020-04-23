@@ -10,12 +10,15 @@ import numpy as np
 
 
 class CardDataLoader(object):
-    def __init__(self):
-        self.ds = CardDataset()
+    def __init__(self, dataset):
+        self.ds = dataset
+        weigths = [0.2 if label == 'back' else 1 for _, label in self.ds]
+        self.sampler = torch.utils.data.WeightedRandomSampler(
+            weigths, 64, replacement=True)
 
     def __call__(self):
         dl = torch.utils.data.DataLoader(
-            self.ds, batch_size=32, num_workers=0, collate_fn=self.collate_fn)
+            self.ds, batch_size=16, num_workers=0, collate_fn=self.collate_fn, sampler=self.sampler)
         return dl
 
     def collate_fn(self, batch):
@@ -33,17 +36,21 @@ class CardDataLoader(object):
 
 class CardDataset(torch.utils.data.Dataset):
 
-    def __init__(self):
-        imgs = glob.glob(os.path.join(
-            config.IMG_DIR, 'extractCard/*.jpg'))
-        self.imgs = imgs[0:666]
-        self.aug = iaa.Sequential([
+    def __init__(self, mode):
+        self.imgs = glob.glob(os.path.join(
+            config.IMG_DIR, 'cards/*.jpg'))
+        self.labels = glob.glob(os.path.join(
+            config.IMG_DIR, 'cards/outputs/*.xml'))
 
+        self.aug = iaa.Sequential([
+            iaa.Fliplr(0.5),
+            iaa.GaussianBlur(sigma=(0.0, 3.0)),
+            iaa.Affine(scale=(0.6, 1.1),
+                       translate_percent=(-0.2, 0.2), rotate=(-25, 25))
         ])
 
-        labels = glob.glob(os.path.join(
-            config.IMG_DIR, 'extractCard/outputs/*.xml'))
-        self.labels = labels[0:666]
+        if mode == 'test':
+            self.aug = iaa.Sequential([])
 
     def __getitem__(self, index):
         img = self.imgs[index]
@@ -51,6 +58,7 @@ class CardDataset(torch.utils.data.Dataset):
         img = cv2.imread(img)
         img = cv2.resize(img, (224, 224))
         img = img[:, :, ::-1]
+        # img = self.aug(image=img)
 
         return img, label
 
