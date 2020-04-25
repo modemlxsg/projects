@@ -1,5 +1,7 @@
-sess = rt.InferenceSession('./build/card_reg_v1.onnx')
-# input_name = sess.get_inputs[0].name
-# pred = sess.run(None, {input_name: img})[0]
+ds = CardDataset('test')
 
-# print(pred)
+# img, lbl = ds.__getitem__(0)
+
+# img = np.transpose(img, (2, 0, 1))
+# img = np.expand_dims(img, 0)
+# print(img.shape)
