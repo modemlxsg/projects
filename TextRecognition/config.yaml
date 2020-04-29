@@ -6,7 +6,8 @@ dataset:
     test_num: 80
     img_height: 32
   trdg:
-    root_dir: [F:\img\synth\out_1, F:\img\synth\out_2, F:\img\synth\out_3]
+    # root_dir: [F:\img\synth\out_1, F:\img\synth\out_2, F:\img\synth\out_3]
+    root_dir: [F:\img\texts]
 
 lexicon:
   blank: 91
@@ -23,4 +24,4 @@ train:
   epochs: 500
   lr: 0.0001
   batch_size: 32
-  checkpoint:
+  checkpoint: ./save/epoch_50.h5

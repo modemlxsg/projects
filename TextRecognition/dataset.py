@@ -50,7 +50,6 @@ class Trdg_Dataset:
         im = tf.io.decode_jpeg(im, channels=1)
         im = tf.image.convert_image_dtype(im, tf.float32)
         im = tf.image.resize(im, [32, 100])
-        # im = im / 255.0
         return im
 
     def read_data(self):

@@ -9,8 +9,6 @@ ds = ds.get_ds()
 val_ds = Trdg_Dataset('val').get_ds()
 
 for index, (imgs, lbls) in enumerate(ds):
-    # print(imgs.shape)
-    # print(lbls)
 
     y_true = tf.sparse.to_dense(lbls, default_value=91)
     print(y_true)
